@@ -13,13 +13,13 @@ Role Variables
 
 Available variables are listed below, along with default values:
 ```yaml
-use_vi_keys: false
+use_vi_keys: true
 
 # number of lines to store in scrollback
 history_limit: 75000
 
-# by default, use tmux's stock prefix
-tmux_prefix: C-b
+# change prefix to C-a to make nested tmux more convenient
+tmux_prefix: C-a
 ```
 
 Dependencies
