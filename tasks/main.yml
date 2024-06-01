@@ -5,6 +5,7 @@
   package:
     name: tmux
     state: present
+  become: true
 
 # sets up a useful base tmux configuration
 - name: Create ~/.config/tmux
