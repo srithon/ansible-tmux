@@ -1,4 +1,4 @@
-Role Name
+Ansible Role: tmux
 =========
 
 Installs an opinionated tmux configuration under the current user for Linux servers, installing the `tmux` package if it isn't present.
