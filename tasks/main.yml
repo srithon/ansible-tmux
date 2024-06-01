@@ -14,10 +14,13 @@
     state: directory
 
 # create file for manual (non-automated) configuration
-- name: Create ~/.config/tmux/manual_config.tmux
-  file:
-    path: ~/.config/tmux/manual_config.tmux
-    state: file
+- name: Create ~/.config/tmux/manual_config.tmux if it doesn't exist
+  ansible.builtin.copy:
+    dest: ~/.config/tmux/manual_config.tmux
+    content: |
+      # put any ad-hoc, unmanaged configuration in this file!
+    # don't overwrite existing file!
+    force: false
 
 - name: Create ~/.config/tmux/tmux.conf from template
   template:
