@@ -1,0 +1,24 @@
+---
+# tmux is generally provided by a "tmux" package, so this should work for most
+# distros.
+- name: Install tmux
+  package:
+    name: tmux
+    state: present
+
+# sets up a useful base tmux configuration
+- name: Create ~/.config/tmux
+  file:
+    path: ~/.config/tmux
+    state: directory
+
+# create file for manual (non-automated) configuration
+- name: Create ~/.config/tmux/manual_config.tmux
+  file:
+    path: ~/.config/tmux/manual_config.tmux
+    state: file
+
+- name: Create ~/.config/tmux/tmux.conf from template
+  template:
+    dest: ~/.config/tmux/tmux.conf
+    src: ../templates/tmux.conf
