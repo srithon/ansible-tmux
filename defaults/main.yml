@@ -6,3 +6,7 @@ history_limit: 75000
 
 # change prefix to C-a to make nested tmux more convenient
 tmux_prefix: C-a
+
+# binds C-n and C-p for navigating forward/backward between windows, allowing
+# you to hold Ctrl while hitting the prefix key and the navigation key
+bind_window_ctrl_nav_keys: true
