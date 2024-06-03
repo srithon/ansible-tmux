@@ -2,6 +2,7 @@ Ansible Role: tmux
 =========
 
 Installs an opinionated tmux configuration under the current user for Linux servers, installing the `tmux` package if it isn't present.
+Installs the configuration into `~/.config/tmux` if the current `tmux` version supports it, otherwise installing into `~`.
 
 Requirements
 ------------
