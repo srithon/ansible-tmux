@@ -7,22 +7,44 @@
     state: present
   become: true
 
+# we use the shell module instead of package_facts because there may be
+# multiple versions of tmux installed on the system, and we only care about
+# the first one in PATH (which we would actually be using).
+- name: Get active tmux package version
+  shell:
+    cmd: "tmux -V | cut -d' ' -f 2"
+  register: tmux_version
+  changed_when: false
+  # NOTE: need to specify that we also run it in check mode
+  check_mode: false
+
+# see the commit: https://github.com/tmux/tmux/commit/15d7e564ddab575dd3ac803989cc99ac13b57198
+- name: Determine if the active tmux version supports $XDG_CONFIG_HOME
+  ansible.builtin.set_fact:
+    tmux_supports_xdg: "{{ tmux_version.stdout is version('3.1', '>=') }}"
+
+- name: Set tmux config paths based on XDG support
+  ansible.builtin.set_fact:
+    tmux_config_root: "{{ '~/.config/tmux' if tmux_supports_xdg else '~' }}"
+    # if we are putting the files in our home directory, then they must be hidden
+    tmux_filename_prefix: "{{ '' if tmux_supports_xdg else '.' }}"
+
 # sets up a useful base tmux configuration
-- name: Create ~/.config/tmux
+- name: Create {{tmux_config_root}}
   file:
-    path: ~/.config/tmux
+    path: "{{ tmux_config_root }}"
     state: directory
 
 # create file for manual (non-automated) configuration
-- name: Create ~/.config/tmux/manual_config.tmux if it doesn't exist
+- name: Create {{tmux_config_root}}/{{tmux_filename_prefix}}manual_config.tmux if it doesn't exist
   ansible.builtin.copy:
-    dest: ~/.config/tmux/manual_config.tmux
+    dest: "{{ tmux_config_root }}/{{ tmux_filename_prefix }}manual_config.tmux"
     content: |
       # put any ad-hoc, unmanaged configuration in this file!
     # don't overwrite existing file!
     force: false
 
-- name: Create ~/.config/tmux/tmux.conf from template
+- name: Create {{tmux_config_root}}/{{tmux_filename_prefix}}tmux.conf from template
   template:
-    dest: ~/.config/tmux/tmux.conf
+    dest: "{{tmux_config_root}}/{{tmux_filename_prefix}}tmux.conf"
     src: ../templates/tmux.conf
